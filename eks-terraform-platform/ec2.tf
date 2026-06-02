@@ -26,7 +26,7 @@ resource "aws_instance" "test_ec2_1" {
   ami                    = data.aws_ami.ubuntu.id
   instance_type          = "t3.micro"
   subnet_id              = aws_subnet.private.id
-  vpc_security_group_ids = [aws_security_group.eks_sg.id]
+  vpc_security_group_ids = [aws_security_group.private_sg.id]
   key_name               = aws_key_pair.deployer.key_name
 
   # No public IP - All traffic goes through NAT Gateway
@@ -55,7 +55,7 @@ resource "aws_instance" "test_ec2_2" {
   ami                    = data.aws_ami.ubuntu.id
   instance_type          = "t3.micro"
   subnet_id              = aws_subnet.private_2.id
-  vpc_security_group_ids = [aws_security_group.eks_sg.id]
+  vpc_security_group_ids = [aws_security_group.private_sg.id]
   key_name               = aws_key_pair.deployer.key_name
 
   # No public IP - traffic routed through NAT Gateway
