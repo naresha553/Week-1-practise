@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+  namespace: practice
+data:
+  database.host: "mysql-statefulset-0.mysql-service.practice.svc.cluster.local"
+  database.port: "3306"
+  app.name: "my-kubernetes-app"
+  app.version: "1.0.0"
+  log.level: "INFO"
+  config.json: |
+    {
+      "server": {
+        "port": 8080,
+        "host": "0.0.0.0"
+      },
+      "database": {
+        "pool_size": 10,
+        "timeout": 30
+      }
+    }

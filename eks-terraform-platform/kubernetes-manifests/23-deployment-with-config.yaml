@@ -1,0 +1,84 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-with-config
+  namespace: practice
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: app-with-config
+  template:
+    metadata:
+      labels:
+        app: app-with-config
+    spec:
+      serviceAccountName: app-sa
+      containers:
+      - name: app
+        image: busybox:latest
+        command: ["/bin/sh"]
+        args: ["-c", "echo 'App with ConfigMap and Secrets'; sleep infinity"]
+        
+        # Using ConfigMap as environment variables
+        env:
+        - name: DB_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: app-config
+              key: database.host
+        - name: DB_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: app-config
+              key: database.port
+        - name: APP_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: app-config
+              key: app.name
+        
+        # Using Secret as environment variables
+        - name: DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: app-secrets
+              key: database.username
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: app-secrets
+              key: database.password
+        
+        # Volume mounts
+        volumeMounts:
+        - name: config-volume
+          mountPath: /etc/config
+        - name: secret-volume
+          mountPath: /etc/secrets
+        - name: data-volume
+          mountPath: /data
+        
+        resources:
+          limits:
+            cpu: 100m
+            memory: 128Mi
+          requests:
+            cpu: 50m
+            memory: 64Mi
+      
+      volumes:
+      # ConfigMap as volume
+      - name: config-volume
+        configMap:
+          name: app-config
+      
+      # Secret as volume
+      - name: secret-volume
+        secret:
+          secretName: app-secrets
+      
+      # PVC as volume
+      - name: data-volume
+        persistentVolumeClaim:
+          claimName: app-data-pvc
