@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: debug-pod
+  namespace: practice
+spec:
+  containers:
+  - name: debug
+    image: busybox:latest
+    command: ["/bin/sh"]
+    args: ["-c", "while true; do echo 'Debug Pod Running'; sleep 30; done"]
+    resources:
+      limits:
+        cpu: 50m
+        memory: 32Mi
+      requests:
+        cpu: 25m
+        memory: 16Mi
+  restartPolicy: Always

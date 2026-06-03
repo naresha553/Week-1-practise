@@ -1,0 +1,26 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: data-processor-job
+  namespace: practice
+spec:
+  backoffLimit: 3
+  ttlSecondsAfterFinished: 600
+  template:
+    metadata:
+      labels:
+        app: job-pod
+    spec:
+      containers:
+      - name: job-processor
+        image: busybox:latest
+        command: ["/bin/sh"]
+        args: ["-c", "echo 'Job started'; for i in 1 2 3 4 5; do echo 'Processing batch '$i; sleep 2; done; echo 'Job completed successfully'"]
+        resources:
+          limits:
+            cpu: 100m
+            memory: 64Mi
+          requests:
+            cpu: 50m
+            memory: 32Mi
+      restartPolicy: Never

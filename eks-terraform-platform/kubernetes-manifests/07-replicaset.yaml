@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: app-replicaset
+  namespace: practice
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: replicaset-app
+  template:
+    metadata:
+      labels:
+        app: replicaset-app
+    spec:
+      containers:
+      - name: replicaset-pod
+        image: busybox:latest
+        command: ["/bin/sh"]
+        args: ["-c", "echo 'ReplicaSet Pod Running on '$(hostname); sleep infinity"]
+        resources:
+          limits:
+            cpu: 50m
+            memory: 32Mi
+          requests:
+            cpu: 25m
+            memory: 16Mi

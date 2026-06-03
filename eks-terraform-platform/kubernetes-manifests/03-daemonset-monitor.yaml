@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: node-monitor
+  namespace: practice
+spec:
+  selector:
+    matchLabels:
+      app: node-monitor
+  template:
+    metadata:
+      labels:
+        app: node-monitor
+    spec:
+      hostNetwork: false
+      containers:
+      - name: monitor
+        image: busybox:latest
+        command: ["/bin/sh"]
+        args: ["-c", "while true; do echo 'Node: '$(hostname)' - '$(date); sleep 60; done"]
+        resources:
+          limits:
+            cpu: 50m
+            memory: 32Mi
+          requests:
+            cpu: 25m
+            memory: 16Mi
